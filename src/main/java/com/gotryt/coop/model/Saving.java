@@ -32,6 +32,7 @@ public class Saving {
 
     private BigDecimal balance;
     private BigDecimal amount;
+    private String duration;
 
     @ManyToOne
     @JsonIgnore

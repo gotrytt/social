@@ -17,6 +17,7 @@ public class LoanDto {
     private BigDecimal balance;
     private String type;
     private String purpose;
+    private String duration;
     private String bankName;
     private String aza;
     private String accountName;

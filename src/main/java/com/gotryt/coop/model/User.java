@@ -45,7 +45,13 @@ public class User implements UserDetails {
     private String middleName;
     private String lastName;
     private String gender;
+
     private BigDecimal savingsBalance;
+    private BigDecimal loanBalance;
+    private BigDecimal sharesBalance;
+    private BigDecimal totalPurchase;
+    private BigDecimal monthlyPlan;
+
     private String email;
     private String passport;
     private String address;

@@ -1,6 +1,7 @@
 package com.gotryt.coop.model;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +35,7 @@ public class Loan {
 
     private BigDecimal balance;
     private BigDecimal amount;
+    private BigDecimal repayAmount;
     private String status;
     private String purpose;
     private String type;
@@ -45,6 +47,9 @@ public class Loan {
     private String bankName;
     private String aza;
     private String accountName;
+    private LocalDate startDate;
+    private LocalDate EndDate;
+    private String duration;
 
     @Builder.Default
     @OneToMany
