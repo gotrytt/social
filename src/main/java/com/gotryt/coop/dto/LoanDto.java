@@ -2,6 +2,8 @@ package com.gotryt.coop.dto;
 
 import java.math.BigDecimal;
 
+// import com.gotryt.coop.model.LoanType;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,6 +19,7 @@ public class LoanDto {
     private BigDecimal balance;
     private String type;
     private String purpose;
+    private String remark;
     private String duration;
     private String bankName;
     private String aza;

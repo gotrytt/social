@@ -14,7 +14,9 @@ import com.gotryt.coop.repository.UserRepository;
 import com.gotryt.coop.service.UserService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 
 @RestController
@@ -51,5 +53,16 @@ public class AdminController {
     public User activateUser(@PathVariable Long userId, @RequestHeader("Authorization") String jwt) throws UserException {
         return userService.activateUser(userId);
     }
+
+    @PutMapping("/user/update")
+    public User updateUser(@RequestBody User user, @RequestHeader("Authorization") String jwt) throws UserException {
+        return userService.updateUser(user);
+    } 
+
+    @PostMapping("/users/multi")
+    public List<User> addUsers(@RequestBody List<User> users) throws UserException {
+        return userService.addMultiUsers(users);
+    }
+
     
 }

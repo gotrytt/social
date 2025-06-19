@@ -50,7 +50,7 @@ public class User implements UserDetails {
     private BigDecimal loanBalance;
     private BigDecimal sharesBalance;
     private BigDecimal totalPurchase;
-    private BigDecimal monthlyPlan;
+    private BigDecimal plan;
 
     private String email;
     private String passport;

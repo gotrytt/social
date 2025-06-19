@@ -7,6 +7,9 @@ import com.gotryt.coop.model.User;
 import com.gotryt.coop.repository.UserRepository;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -76,9 +79,10 @@ public class UserServiceImpl implements UserService {
             .loanBalance(BigDecimal.ZERO)
             .sharesBalance(BigDecimal.ZERO)
             .totalPurchase(BigDecimal.ZERO)
+            .plan(userRequest.getPlan())
             .status("NEW")
-            .role(Role.ROLE_MEMBER)
-            // .role(Role.valueOf("ROLE_ADMIN"))
+            .role(Role.MEMBER)
+            // .role(Role.valueOf("ADMIN"))
             .build();
 
         User createdUser = userRepository.save(newUser);
@@ -173,10 +177,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User updateUser(Long userId, User userData) throws UserException {
+    public User updateUser(User userData) throws UserException {
         
         // Retrieve the existing user or throw an exception if not found
-        User user = userRepository.findById(userId)
+        User user = userRepository.findById(userData.getId())
                 .orElseThrow(() -> new UserException("User not found"));
 
         if (userData.getFirstName() != null) {
@@ -234,6 +238,9 @@ public class UserServiceImpl implements UserService {
         if (userData.getLga() != null) {
             user.setLga(userData.getLga());
         }
+        if (userData.getPlan() != null) {
+            user.setPlan(userData.getPlan());
+        }
 
         return userRepository.save(user);
     }
@@ -248,4 +255,39 @@ public class UserServiceImpl implements UserService {
 
         return userRepository.save(user);
     }
+
+@Override
+public List<User> addMultiUsers(List<User> users) throws UserException {
+    List<User> newUsers = users.stream()
+        .map(u -> {
+            User user = new User();
+            user.setFirstName(u.getFirstName());
+            user.setLastName(u.getLastName());
+            user.setEmail(u.getEmail());
+            user.setPhone(u.getPhone());
+            user.setMemship(u.getMemship());
+            user.setStatus("new"); // default status
+            user.setRole(Role.MEMBER);  // default role
+            user.setCreatedAt(LocalDateTime.now());
+            return user;
+        })
+        .collect(Collectors.toList());
+
+    return userRepository.saveAll(newUsers);
+}
+
+@Override
+public AuthResponse sendOtp() {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'sendOtp'");
+}
+
+@Override
+public AuthResponse validateOtp() {
+    
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'validateOtp'");
+}
+
+
 }

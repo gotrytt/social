@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+// import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -29,13 +29,14 @@ public class Saving {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String  txnId;
+    private String  status;
 
     private BigDecimal balance;
     private BigDecimal amount;
-    private String duration;
+    private LocalDateTime month;
 
     @ManyToOne
-    @JsonIgnore
+    // @JsonIgnore
     private User user;
 
     @CreationTimestamp

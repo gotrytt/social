@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.gotryt.coop.dto.RepayDto;
+import com.gotryt.coop.dto.RepayResponse;
 import com.gotryt.coop.exception.LoanException;
 import com.gotryt.coop.exception.RepayException;
 import com.gotryt.coop.model.Loan;
@@ -30,8 +31,8 @@ public class RepayServiceImpl implements RepayService {
     private UserRepository userRepository;
 
     @Override
-    @Transactional // Ensures all DB operations are atomic
-    public Repay repayNow(User user, Long loanId, RepayDto repayDto) throws LoanException, RepayException {
+    @Transactional
+    public RepayResponse repayNow(User user, Long loanId, RepayDto repayDto) throws LoanException, RepayException {
 
         if (user == null) {
             throw new RepayException("User not found");
@@ -47,23 +48,39 @@ public class RepayServiceImpl implements RepayService {
             throw new LoanException("Repayment amount exceeds outstanding loan balance");
         }
 
-        // Create a repayment transaction
+        // Create repayment transaction
         Repay repayLoan = Repay.builder()
             .amount(repaymentAmount)
-            .txnId(TxnIdGen.generateTransactionId()) // Generate unique transaction ID
+            .txnId(TxnIdGen.generateTransactionId())
             .balance(remainingBalance)
             .loan(loan)
+            .parentLoanId(loan.getId())
+            .loanType(loan.getType())
+            .status("submitted")
             .user(user)
             .build();
 
-        // Update the loan balance
+        // Save repayment and update loan
+        repayRepository.save(repayLoan);
         loan.setBalance(remainingBalance);
+
+        if (remainingBalance.compareTo(BigDecimal.ZERO) == 0) {
+            loan.setStatus("completed");
+        }
+
         loanRepository.save(loan);
 
-        // Update user balance correctly
-        user.setLoanBalance(remainingBalance);
+        // ✅ Subtract repayment amount from total loan balance
+        BigDecimal updatedLoanBalance = user.getLoanBalance().subtract(repaymentAmount);
+        user.setLoanBalance(updatedLoanBalance.max(BigDecimal.ZERO)); // Avoid negative
+
         userRepository.save(user);
 
-        return repayRepository.save(repayLoan);
+        return RepayResponse.builder()
+            .responseCode("100")
+            .responseMessage("Repayment successful")
+            .repay(repayLoan)
+            .build();
     }
+
 }

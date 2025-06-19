@@ -9,8 +9,9 @@ import java.util.List;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -37,11 +38,12 @@ public class Loan {
     private BigDecimal amount;
     private BigDecimal repayAmount;
     private String status;
+    private String remark;
     private String purpose;
     private String type;
 
     @ManyToOne
-    @JsonIgnore
+    // @JsonIgnore
     private User user;
 
     private String bankName;
@@ -52,9 +54,11 @@ public class Loan {
     private String duration;
 
     @Builder.Default
-    @OneToMany
+    // private List<Repay> repays = new ArrayList<>();
+    @OneToMany(mappedBy = "loan", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference   // Controls serialization
     private List<Repay> repays = new ArrayList<>();
-
+    
     @CreationTimestamp
     private LocalDateTime createdAt;
     @UpdateTimestamp

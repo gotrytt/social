@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -30,16 +30,19 @@ public class Repay {
     private Long id;
 
     private BigDecimal amount;
+    private Long parentLoanId;
     private BigDecimal balance;
     private String txnId;
+    private String status;
 
     @ManyToOne
-    @JsonIgnore
+    // @JsonIgnore
     private User user;
 
     @ManyToOne
-    @JsonIgnore
+    @JsonBackReference   // Prevents circular nesting
     private Loan loan;
+    private String loanType;
 
     @CreationTimestamp
     private LocalDateTime createdAt;

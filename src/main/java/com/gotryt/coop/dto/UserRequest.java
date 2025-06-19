@@ -1,5 +1,6 @@
 package com.gotryt.coop.dto;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import lombok.AllArgsConstructor;
@@ -32,6 +33,7 @@ public class UserRequest {
     private String station;
     private String status;
     private String marital;
+    private BigDecimal plan;
     private String lga;
 
 }

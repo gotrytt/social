@@ -1,11 +1,9 @@
 package com.gotryt.coop.controller;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -36,9 +34,9 @@ public class SavingController {
     SavingRepository savingRepository;
     
     @PostMapping("/save")
-    public Saving savevNow(@RequestHeader("Authorization") String jwt, @RequestBody BigDecimal amount) throws SavingException {
+    public Saving savevNow(@RequestHeader("Authorization") String jwt) throws SavingException {
         User user = userService.findUserProfileByJwt(jwt).getUser();
-        return savingService.saveNow(user, amount);
+        return savingService.saveNow(user);
     }
 
     @GetMapping("/all")
@@ -55,6 +53,17 @@ public class SavingController {
     @GetMapping("/{savingId}")
     public Optional<Saving> savingById(@RequestHeader("Authorization") String jwt, @PathVariable Long savingId) throws SavingException {
         return savingRepository.findById(savingId);
+    }
+
+    @GetMapping("/user/{userId}")
+    public List<Saving> savingByUserId(@RequestHeader("Authorization") String jwt, @PathVariable Long userId) throws SavingException {
+        return savingRepository.findByUser_Id(userId);
+    }
+
+    @GetMapping("/last")
+    public Optional<Saving> lastSavings(@RequestHeader("Authorization") String jwt) throws SavingException {
+        User user = userService.findUserProfileByJwt(jwt).getUser();
+        return savingRepository.findTopByUserIdOrderByIdDesc(user.getId());
     }
 
 }

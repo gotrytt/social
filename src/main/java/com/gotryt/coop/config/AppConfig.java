@@ -31,7 +31,7 @@ public class AppConfig {
             .and()
             .authorizeHttpRequests(authorize -> authorize
                 // Permit signup and login endpoints without authentication
-                .requestMatchers("/api/auth/signup", "/api/auth/login").permitAll()
+                .requestMatchers("/api/auth/signup", "/api/auth/login", "/api/otp/***").permitAll()
                 // Require authentication for all other /api/** endpoints
                 .requestMatchers("/api/**").authenticated()
                 // Allow any other requests without authentication

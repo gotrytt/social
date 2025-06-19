@@ -1,22 +1,22 @@
 package com.gotryt.coop.dto;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
+import com.gotryt.coop.model.Shares;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Data
-@JsonInclude(JsonInclude.Include.NON_NULL)
-public class CoopResponse {
+public class SharesResponse {
 
     private String responseCode;
     private String responseMessage;
-    private AccountInfo accountInfo;
-    private OTPResponse otpResponse;
+    private Shares shares;
 
 }

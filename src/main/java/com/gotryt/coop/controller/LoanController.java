@@ -10,7 +10,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.gotryt.coop.dto.LoanDto;
+import com.gotryt.coop.dto.LoanResponse;
 import com.gotryt.coop.dto.RepayDto;
+import com.gotryt.coop.dto.RepayResponse;
 import com.gotryt.coop.exception.LoanException;
 import com.gotryt.coop.exception.RepayException;
 import com.gotryt.coop.model.Loan;
@@ -48,7 +50,7 @@ public class LoanController {
     RepayService repayService;
     
     @PostMapping("/apply")
-    public Loan applyLoan(@RequestHeader("Authorization") String jwt, @RequestBody LoanDto loanRequest) throws LoanException {
+    public LoanResponse applyLoan(@RequestHeader("Authorization") String jwt, @RequestBody LoanDto loanRequest) throws LoanException {
         User user = userService.findUserProfileByJwt(jwt).getUser();
         return loanService.applyLoan(user, loanRequest);
     }
@@ -69,13 +71,23 @@ public class LoanController {
         return loanRepository.findById(loanId);
     }
 
-    @PutMapping("/{loanId}/aprove")
+    @GetMapping("/user/{userId}")
+    public List<Loan> loanByUserId(@RequestHeader("Authorization") String jwt, @PathVariable Long userId) throws LoanException {
+        return loanRepository.findByUser_Id(userId);
+    }
+
+    @PutMapping("/{loanId}/approve")
     public Loan approveLoan(@RequestHeader("Authorization") String jwt, @PathVariable Long loanId) throws LoanException {
         return loanService.approveLoan(loanId);
     }
 
+    @PutMapping("/{loanId}/reject")
+    public Loan rejectLoan(@RequestHeader("Authorization") String jwt, @PathVariable Long loanId, @RequestBody LoanDto loanDto) throws LoanException {
+        return loanService.rejectLoan(loanId, loanDto);
+    }
+
     @PostMapping("/{loanId}/repay")
-    public Repay repayNow(@RequestHeader("Authorization") String jwt, @PathVariable Long loanId, @RequestBody RepayDto repayRequest) throws RepayException, LoanException {
+    public RepayResponse addRepay(@RequestHeader("Authorization") String jwt, @PathVariable Long loanId, @RequestBody RepayDto repayRequest) throws RepayException, LoanException {
         User user = userService.findUserProfileByJwt(jwt).getUser();
         return repayService.repayNow(user, loanId, repayRequest);
     }
@@ -89,6 +101,11 @@ public class LoanController {
     @GetMapping("/repays")
     public List<Repay> allRepay(@RequestHeader("Authorization") String jwt) {
         return repayRepository.findAll();
+    }
+
+    @GetMapping("/repays/user/{userId}")
+    public List<Repay> userRepay(@RequestHeader("Authorization") String jwt, @PathVariable Long userId) {
+        return repayRepository.findByUser_Id(userId);
     }
 
 }
